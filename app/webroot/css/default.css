@@ -1,0 +1,161 @@
+@charset "UTF-8";
+
+/*#############################################################
+	default.css
+	
+	一般的なタグを再定義
+	（およそWinIEのデフォルトスタイルに近い値を手動指定）
+
+body
+┗#wrapper 
+	┃
+	┣#head	ヘッドエリア
+	┃
+	┣#contents	コンテンツエリア	←★適用範囲ブロック★
+	┃
+	┗#foot	フットエリア
+
+#############################################################
+note:
+
+ver.01	公開時バージョン（2008.01.10）
+#############################################################*/
+
+#head,
+#contents,
+#foot {font-size:12px;}
+/*
+#head *,
+#contents *,
+#foot * {font-size:100%;}
+*/
+#contents h1,
+#contents h2,
+#contents h3,
+#contents h4,
+#contents h5,
+#contents h6 {
+	margin-bottom:10px;
+}
+
+#contents ol,
+#contents ul {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+#contents p,
+#contents dl {
+	line-height:1.5;
+	margin:10px;
+}
+
+#contents ol,
+#contents ul {
+	padding:3px 3px 3px 30px;
+}
+
+#contents li {
+	margin:0 auto 0.25em;
+}
+
+#contents dd {
+	padding:3px 3px 3px 30px;
+}
+
+#contents fieldset {margin-bottom:10px;}
+
+/*非表示だがCSSオフ時にエリア境界を明示する
+--------------------------------------------*/
+
+br.clearfloat {clear:both;}
+
+hr.clearfloat {
+	clear:both;
+	margin:0;padding:0;
+	width:100%;
+	visibility:hidden;
+}
+
+/*--------------------------------------------*/
+/*	インライン要素*/
+/*--------------------------------------------*/
+img {
+	border:none;
+	/*vertical-align:bottom;*/
+}
+
+a {
+	color:#666;
+}
+
+a:visited {color:maroon;}
+
+a:hover {
+	color:red;
+	text-decoration:none;
+	border:none;
+}
+
+em {
+	font-style:normal;
+	color:red;
+}
+
+strong {
+	/*color:red;*/
+	font-weight:bold;
+}
+
+label {
+	padding-right:10px;
+	cursor:pointer;
+}
+
+input.x-large {width:99%;}
+input.large {width:80%;}
+input.l-middle{width:60%;}
+input.middle{width:50%;}
+input.s-middle{width:40%;}
+input.small{width:30%;}
+input.x-small{width:15%;}
+input.xx-small{width:5%;}
+
+textarea {width:90%;}
+
+input[type=text],
+input[type=password],
+select,
+textarea {border:1px solid #333;}
+
+input[type=text] {
+	padding:1px 0;
+}
+
+button,
+input.btn {
+	width:10em;
+	color:white;
+	background:#6D84B4;
+	cursor:pointer;
+}
+
+td button,
+td input.btn {
+	width:auto;
+	white-space:nowrap;
+}
+
+button.active {background:navy;}
+button.ng {background:#900;}
+button.semiNg {background:#333;}
+
+abbr,
+acronym {
+	cursor:help;
+	border-bottom:1px dotted #999;
+}
+
+sub {
+	font-size:80% !important;
+}

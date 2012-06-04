@@ -1,0 +1,237 @@
+﻿@charset "UTF-8";
+
+/*--------------------------------------------
+ *エリア共通
+ *--------------------------------------------*/
+
+*{
+	margin:0;
+	padding:0;
+}
+
+/*html,body {height:100%;}*/
+
+body {
+	color:#333;
+	/*background:url(./cssimg/body_bg.png) repeat-y center;*/
+	font-family:
+		'ヒラギノ角ゴ Pro W3',
+		'Hiragino Kaku Gothic Pro',
+		'メイリオ',Meiryo,
+		'ＭＳ Ｐゴシック',
+		sans-serif;
+}
+* html body {text-align:center;}
+
+#jsOffMsg {
+	color:white;
+	display:block;
+	text-align:center;
+	background:red;
+}
+
+#wrapper {
+	width:90%;
+	min-width:950px;
+	margin-left:auto;margin-right:auto;
+	border-left:1px solid gray;
+	border-right:1px solid gray;
+}
+body.forThickBox #wrapper {border:none;}
+* html #wrapper {text-align:left;}
+
+#head,
+#contents,
+#foot {/*margin:0 20px;*/}
+
+
+/*--------------------------------------------
+ *ヘッドエリア
+ *--------------------------------------------*/
+#head {
+	position:relative;
+	padding:5px;
+	border-bottom:1px solid gray;
+}
+
+#head h1 {
+	font-size:100%;
+}
+
+#head h1 a {outline:none;}
+
+/*--------------------------------------------
+ *コンテンツエリア（メニュー表示切り替え）
+ *--------------------------------------------*/
+
+#contents ul#menuDispSwitch {
+	width:300px;
+	float:left;
+	margin:0;
+	padding:3px;
+	border-bottom:0px solid gray;
+	background:white;
+}
+#contents ul#menuDispSwitch li {display:inline;}
+
+#contents #nowLoginUser {
+	text-align:right;
+	font-size:10px;
+	margin:0;
+	margin-left:300px;
+	padding:3px;
+	border-bottom:0px solid gray;
+}
+/*--------------------------------------------
+ *コンテンツエリア（サブメニュー）
+ *--------------------------------------------*/
+#contents #submenu {
+	clear:left;
+	float:left;
+	width:210px;
+	border-top:1px solid gray;
+}
+
+#contents #submenu #colorMap {}
+
+#contents #submenu #colorMap ul {
+	margin:10px 15px;
+	padding:0;
+}
+
+#contents #submenu #colorMap ul li {list-style:none;}
+#contents #submenu #colorMap ul li .colorTip {padding:0 5px;}
+
+#contents #submenu #authBoxOnSub {
+	margin-bottom:10px;
+}
+
+#contents #submenu #authBoxOnSub form {text-align:center;}
+
+#contents #submenu h2 {
+	color:#3B5998;
+	margin:0 0 10px;
+	padding:5px;
+	border-top:1px solid gray;
+	border-bottom:1px solid gray;
+	background:#F7F7F7;
+}
+#contents #submenu #authBoxOnSub h2 {
+	border-top:none;
+}
+/*--------------------------------------------
+ *コンテンツエリア（本文）
+ *--------------------------------------------*/
+
+#contents {
+	clear:both;
+	padding-bottom:50px;
+	background:url(./cssimg/contents_bg.gif) repeat-y 210px top;
+}
+
+body.forThickBox #contents {background:none;}
+
+#contents #main {
+	margin-left:20px;
+	margin-right:20px;
+	padding-top:20px;
+}
+
+#contents .goHead {
+	clear:both;
+	text-align:right;
+}
+
+/*--------------------------------------------
+ *フットエリア
+ *--------------------------------------------*/
+
+#foot {
+	clear:both;
+	height:40px;
+	background:#6D84B4;
+}
+
+#foot ul {
+	font-size:90%;
+	text-align:center;
+	margin:5px 0;
+}
+
+#foot ul li {
+	display:inline;
+	list-style:none;
+}
+#foot ul li a {text-decoration:none;}
+
+#foot p {
+	font-size:90%;
+	text-align:center;
+	padding:0 0 5px;
+	border-top:1px solid gray;
+}
+
+/* ------------------------------ */
+/* メッセージ*/
+/* ------------------------------ */
+#maintenanceMsg {
+	text-align:center;
+	color:white;
+	padding:3px;
+	background-color:red;
+}
+
+.error-message {
+	color:red;
+	padding:2px 2px 2px 20px;
+	background:transparent url(./cssimg/ico_error.png) no-repeat 2px 0.3em;
+}
+
+/*--------------------------------------------
+ *エリア構造確認用
+ *--------------------------------------------*/
+/*
+#wrapper {border:1px solid #999;}
+
+#head {border:1px solid purple;}
+
+#head #globalNavi {border:1px solid green;}
+
+#contents {border:1px solid gray;}
+
+body.top #contents #main,
+body.general #contents #main {border:1px solid orange;}
+
+#foot {border:0px solid navy;}
+*/
+
+.cake-sql-log table {
+	background: #f4f4f4;
+}
+.cake-sql-log td {
+	padding: 4px 8px;
+	text-align: left;
+	font-family: Monaco, Consolas, "Courier New", monospaced;
+	border:1px solid gray;
+	border-collapse:collapse;
+}
+.cake-sql-log caption {
+	color:#fff;
+}
+
+#flashMessage {
+	clear: both;
+	color: #fff;
+	margin-bottom:10px;
+	padding:5px;
+	background: #c43c35;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	background-repeat: repeat-x;
+	background-image: -moz-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: -ms-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ee5f5b), to(#c43c35));
+	background-image: -webkit-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: -o-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: linear-gradient(top, #ee5f5b, #c43c35);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+}

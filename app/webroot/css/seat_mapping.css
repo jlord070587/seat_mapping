@@ -1,0 +1,44 @@
+﻿@charset "UTF-8";
+
+#guestListArea {
+	width:200px;
+	float:left;
+	border:1px solid gray;
+}
+
+#floorArea {
+	margin-left:220px;
+	height:300px;
+	border:1px solid gray;
+	background:gray;
+}
+
+div.groupUnit {
+	width:150px;
+	height:150px;
+	float:left;
+	border-bottom:1px solid gray;
+	border-right:1px solid gray;
+	background:white;
+}
+.dropOver {background:#ffc !important;}
+
+#guestList ul,
+#floorArea div.groupUnit ul {
+	margin:0;
+	padding:0;
+}
+#guestList ul li,
+div.groupUnit ul li {
+	cursor:move;
+	padding:3px;
+	list-style:none;
+}
+#guestList ul li:hover,
+div.groupUnit ul li:hover {
+	background:#ccc;
+}
+
+#guestList ul {
+	min-height:300px;
+}
