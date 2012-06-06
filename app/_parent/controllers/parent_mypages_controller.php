@@ -45,8 +45,15 @@ class ParentMypagesController extends AppSubController
 	
 	public function seat_mapping()
 	{
-		$this->set('guest_list',$this->Guest->getGuestList());
+		$this->set('guest_list',$this->Guest->getGuestList($cond['group_id'] = null));
 		$this->set('group_list',$this->Group->getGroupList());
+	}
+	
+	public function sort_member()
+	{
+		$this->set('guest_list',
+			$this->Guest->getGuestList($cond['group_id'] = $this->passedArgs['gid'])
+		);
 	}
 	
 	public function ajax_guest_list()

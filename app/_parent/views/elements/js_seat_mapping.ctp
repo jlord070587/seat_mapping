@@ -2,9 +2,14 @@
 var GROUP_CAPACITY = 6;
 var TOKEN = '<?php echo $token;?>';
 
+/**
+ * 招待客要素及び未所属エリアにイベントをセット
+ */
 function _setEventToGuestUnit()
 {
-	$('#guestList li,div.groupUnit ul li').draggable({
+	$('#guestList li').draggable({helper:'clone'});
+	$('div.groupUnit ul li').draggable({
+		//disabled:true,//sortableと共存するために必要
 		helper:'clone'
 	});
 	$('#guestList').droppable({
@@ -21,7 +26,9 @@ function _setEventToGuestUnit()
 		}
 	});
 }
-
+/**
+ * テーブル要素にdroppable、配下のulにsortableイベントをセット
+ */
 function _setEventToGroupUnit()
 {
 	$('div.groupUnit').droppable({
@@ -36,10 +43,23 @@ function _setEventToGroupUnit()
 		},
 		drop: function(event,ui){
 			$(this).removeClass('dropOver');
-			_setGroup(ui.draggable,$(this));
+			if(ui.draggable.data('gid') == $(this).data('gid')) return false;
+			_setGroup($(ui).draggable,$(this));
 		}
-	});
+	})
+//	.find('ul').sortable({
+//		placeholder:'placeholder',
+//		update:function(event,ui){
+//			//console.log(event,ui);
+//			console.log(ui.item.parent().find('li'));
+//		}
+//	});
 }
+/**
+ * 招待客をテーブルに移す
+ * @param array $$ ソート対象要素の配列
+ * @param mixed $target ドロップ対象要素
+ */
 function _setGroup($$,$target)
 {
 	_registRelation($$,$target);
@@ -47,9 +67,14 @@ function _setGroup($$,$target)
 		var $list = $( "ul", $target ).length ?
 			$( "ul", $target ) :
 			$( "<ul class='ui-helper-reset'/>" ).appendTo( $target );
-		$list.append($$.show());
+		$list.append($$.attr('data-gid',$target.data('gid')).show());
 	});
 }
+/**
+ * 招待客を未所属エリアに移す
+ * @param array $$ ソート対象要素の配列
+ * @return array
+ */
 function _sortList(list)
 {
 	var sort_hash_arr = [];
@@ -62,9 +87,13 @@ function _sortList(list)
 	});
 	return sort_hash_arr;
 }
+/**
+ * 招待客を未所属エリアに移す
+ * @param mixed $$ ドロップ対象要素
+ */
 function _returnList($$) {
 	$$.fadeOut(function() {
-		$$.appendTo('#guestList ul')
+		$$.attr('data-gid','').appendTo('#guestList ul');
 		var list_set = $('#guestList ul li');
 		$('#guestList ul li').remove();
 		sort_hash_arr = _sortList(list_set.draggable({
@@ -76,7 +105,11 @@ function _returnList($$) {
 	});
 	_setGroup($$,null);
 }
-
+/**
+ * 招待客をテーブルもしくは未所属に紐付ける
+ * @param mixed $$ ドロップ対象要素
+ * @param mixed $target ドロップ先要素
+ */
 function _registRelation($$,$target)
 {
 	var id = $$.data('id');
@@ -97,7 +130,6 @@ function _registRelation($$,$target)
 $(function(){
 	_setEventToGuestUnit();
 	_setEventToGroupUnit();
-
-})
+});
 
 //]]></script>

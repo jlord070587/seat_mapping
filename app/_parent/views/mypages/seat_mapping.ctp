@@ -1,5 +1,8 @@
 <h2><?php echo $this->Session->read('UserInfo.User.user_name');?>さんのマイページ</h2>
-<?php echo $this->Html->css('seat_mapping');?> 
+<?php
+	echo $this->Html->script('thickbox')."\n";
+	echo $this->Html->css(array('seat_mapping','thickbox'))."\n";
+?> 
 <h3>披露宴席次表編成</h3>
 
 <div id="guestListArea">
@@ -24,6 +27,7 @@
 <div id="floorArea">
 <?php if($group_list):foreach($group_list as $item):?> 
 <div data-gid="<?php echo $item['Group']['id'];?>" class="groupUnit">
+
 <?php if($item['Guest']):?> 
 <ul>
 <?php foreach($item['Guest'] as $g_info){

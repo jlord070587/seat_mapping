@@ -8,7 +8,9 @@ class ParentGuest extends AppSub
 	{
 		$conditions = array();
 		if($this->_user_id) $conditions[] = array('Guest.user_id =' => $this->_user_id);
-		$conditions[] = array('Guest.group_id' => NULL);
+		if(isset($cond['group_id'])
+			 || $cond['group_id']==null//何故かNULLのときはissetがfalseになるためこの条件を追加
+		) $conditions[] = array('Guest.group_id' => $cond['group_id']);
 		return $this->find('all',compact('conditions'));
 	}
 	

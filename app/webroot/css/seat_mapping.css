@@ -14,31 +14,36 @@
 }
 
 div.groupUnit {
-	width:150px;
-	height:150px;
+	width:300px;
+	height:75px;
 	float:left;
 	border-bottom:1px solid gray;
 	border-right:1px solid gray;
 	background:white;
 }
 .dropOver {background:#ffc !important;}
-
+.placeholder {height:1.5em;background:#fee;}
 #guestList ul,
 #floorArea div.groupUnit ul {
 	margin:0;
 	padding:0;
 }
 #guestList ul li,
-div.groupUnit ul li {
+#floorArea div.groupUnit ul li {
 	cursor:move;
-	padding:3px;
+	padding:1px 3px;
 	list-style:none;
 }
 #guestList ul li:hover,
-div.groupUnit ul li:hover {
+#floorArea div.groupUnit ul li:hover {
 	background:#ccc;
 }
 
 #guestList ul {
 	min-height:300px;
+}
+
+#floorArea div.groupUnit ul li {
+	float:left;
+	width:144px;
 }

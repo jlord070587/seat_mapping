@@ -129,7 +129,9 @@ class AppController extends Controller
 			$this->laytout = 'ajax';
 			$this->autoRender = false;
 		}
-		
+		if(isset($this->passedArgs['disp']) && $this->passedArgs['disp']=='thickbox'){
+			$this->layout = 'thickbox';
+		}
 		$this->set('is_logon',$this->Session->check('LogonFlg')/* || $this->Session->check('AdminLogonFlg')*/);
 		$this->TokenUtil->setToken($this);
 	}
