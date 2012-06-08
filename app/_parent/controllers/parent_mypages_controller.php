@@ -8,13 +8,13 @@ class ParentMypagesController extends AppSubController
 	
 	public function dev()
 	{
-		foreach(range(1,10) as $num){
-			$rgst['Guest'] = array(
-				'user_id'=>2,'whose_guest'=>1,'name_sei'=>'招待','name_mei'=>'客男'.$num
-			);
+		foreach(range(1,60) as $num){
 //			$rgst['Guest'] = array(
-//				'user_id'=>2,'whose_guest'=>2,'name_sei'=>'招待','name_mei'=>'客子'.$num
+//				'user_id'=>1,'whose_guest'=>1,'affiliation2' => '友人'.$num,'name_sei'=>'招待','name_mei'=>'客男',
 //			);
+			$rgst['Guest'] = array(
+				'user_id'=>1,'whose_guest'=>2,'affiliation2' => '友人'.$num,'name_sei'=>'招待','name_mei'=>'客子',
+			);
 			$this->Guest->create($rgst);
 			$this->Guest->save();
 		}
@@ -67,6 +67,23 @@ class ParentMypagesController extends AppSubController
 		$bool = $this->Guest->registRelation($this->params['form']);
 		echo $bool ? 'success' : 'failure';
 		exit;
+	}
+	
+	public function ajax_regist_sort()
+	{
+		$this->TokenUtil->checkToken($this);
+		if(!in_array($this->params['form']['model'],array('Guest','Group'))) die('failure');
+		$model = $this->params['form']['model'];
+		$bool = $this->$model->updateSort(explode('#',$this->params['form']['sort_str']));
+		echo $bool ? 'success' : 'failure';
+		exit;
+	}
+	
+	public function reset_relation()
+	{
+		$this->Guest->resetRelation();
+		$this->Session->setFlash('紐付けをリセットしました。');
+		$this->redirect(array('action'=>'seat_mapping'));
 	}
 }
 ?>

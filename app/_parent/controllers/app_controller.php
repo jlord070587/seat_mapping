@@ -100,6 +100,11 @@ class AppController extends Controller
 		}
 	}
 	
+	protected function _globalAssign()
+	{
+		$this->set('whose_map',Configure::read('whose_map'));
+	}
+	
 	public function beforeFilter()
 	{
 		$_GET    = _protector_sanitize( $_GET ) ;
@@ -132,6 +137,7 @@ class AppController extends Controller
 		if(isset($this->passedArgs['disp']) && $this->passedArgs['disp']=='thickbox'){
 			$this->layout = 'thickbox';
 		}
+		$this->_globalAssign();
 		$this->set('is_logon',$this->Session->check('LogonFlg')/* || $this->Session->check('AdminLogonFlg')*/);
 		$this->TokenUtil->setToken($this);
 	}

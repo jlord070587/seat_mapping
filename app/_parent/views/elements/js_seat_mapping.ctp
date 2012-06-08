@@ -1,20 +1,55 @@
 <script type="text/javascript">//<![CDATA[
-var GROUP_CAPACITY = 6;
+var GROUP_CAPACITY = 10;
 var TOKEN = '<?php echo $token;?>';
 
+function _flashMsgOperation()
+{
+	if($('#flashMessage').length==0) return;
+	setInterval(function(){
+		if($('#flashMessage').hasClass('afterHide')){
+			$('#flashMessage').addClass('afterHide');
+		}else{
+			$('#flashMessage').remove();
+			clearInterval();
+		}
+	},5000);
+}
+function __consoleFix()
+{
+	var offset1 = $("#guestListArea").offset();
+	$(window).scroll(function(e) {
+		if (offset1.top < $(this).scrollTop()) {
+			$("#guestListArea").css({
+				'position':'fixed',
+				'top':0,
+				'width':'200px',
+				'z-index':100000
+			});
+		} else {
+			$("#guestListArea").css({
+				'position':'static'
+			});
+		}
+	});
+}
+/**
+ * 紐付けを完全に破棄するリセットイベントセット
+ */
+function _setEventResetButton()
+{
+	$('#resetRelation').click(function(){
+		if(!confirm('各テーブルへの紐付けを全てリセットします。\n本当によろしいですか？')) return false;
+		location.href = ROOT_URL + "/mypages/reset_relation";
+	});
+}
 /**
  * 招待客要素及び未所属エリアにイベントをセット
  */
 function _setEventToGuestUnit()
 {
-	$('#guestList li').draggable({helper:'clone'});
-	$('div.groupUnit ul li').draggable({
-		//disabled:true,//sortableと共存するために必要
-		helper:'clone'
-	});
 	$('#guestList').droppable({
 		accept:'div.groupUnit li',
-		over:function(){
+		over:function(event, ui){
 			$(this).addClass('dropOver');
 		},
 		out:function(){
@@ -24,15 +59,24 @@ function _setEventToGuestUnit()
 			$(this).removeClass('dropOver');
 			_returnList(ui.draggable);
 		}
+	}).find('li').draggable({helper:'clone'});
+}
+function __setSortableOnGroupUnit()
+{
+	$('div.groupUnit').find('ul').sortable({
+		placeholder:'placeholder',
+		update:function(event,ui){
+			_sortOnGroupUnit(ui.item.parent());
+		}
+	}).find('li').draggable({
+		disabled:true,//sortableと共存するために必要
+		helper:'clone'
 	});
 }
-/**
- * テーブル要素にdroppable、配下のulにsortableイベントをセット
- */
-function _setEventToGroupUnit()
+function __setDroppableOnGroupUnit()
 {
 	$('div.groupUnit').droppable({
-		accept:function(obj){
+		accept:function(draggable){
 			return ($(this).find('li').length < GROUP_CAPACITY);
 		},
 		over:function(){
@@ -43,17 +87,68 @@ function _setEventToGroupUnit()
 		},
 		drop: function(event,ui){
 			$(this).removeClass('dropOver');
-			if(ui.draggable.data('gid') == $(this).data('gid')) return false;
-			_setGroup($(ui).draggable,$(this));
+			if(ui.draggable.data('gid') != $(this).data('gid')) _setGroup(ui.draggable,$(this));
 		}
-	})
-//	.find('ul').sortable({
-//		placeholder:'placeholder',
-//		update:function(event,ui){
-//			//console.log(event,ui);
-//			console.log(ui.item.parent().find('li'));
-//		}
-//	});
+	});
+}
+function _registGroupSort()
+{
+	var sort_arr = [];
+	$('div.groupUnit').each(function(){
+		sort_arr.push($(this).data('gid'));
+	});
+	$.ajax({
+		url:ROOT_URL + '/mypages/ajax_regist_sort',
+		type:'post',
+		data:{
+			model:'Group',
+			sort_str:sort_arr.join('#'),
+			token:TOKEN
+		},
+		success:function(response){
+			if(response != 'success') alert(response);
+		}
+	});
+}
+/**
+ * テーブル要素にdroppable、配下のulにsortableイベントをセット
+ */
+function _setEventToGroupUnit()
+{
+	$('#floorArea').sortable({
+		handle:'.groupSortHandle',
+		activate:function(){
+			$('div.groupUnit').droppable('disable');
+		},
+		deactivate:function(){
+			$('div.groupUnit').droppable('enable');
+		},
+		update:function(event,ui){
+			_registGroupSort();
+		}
+	});
+	__setDroppableOnGroupUnit();
+	__setSortableOnGroupUnit();
+}
+function _sortOnGroupUnit(group)
+{
+	var sort_arr = [];
+	group.find('li').each(function(){
+		var $$ = $(this);
+		sort_arr.push($$.data('id'));
+	});
+	$.ajax({
+		url:ROOT_URL + '/mypages/ajax_regist_sort',
+		type:'post',
+		data:{
+			model:'Guest',
+			sort_str:sort_arr.join('#'),
+			token:TOKEN
+		},
+		success:function(response){
+			if(response != 'success') alert(response);
+		}
+	});
 }
 /**
  * 招待客をテーブルに移す
@@ -64,10 +159,12 @@ function _setGroup($$,$target)
 {
 	_registRelation($$,$target);
 	$$.fadeOut(function() {
+		$$.remove();//必須
 		var $list = $( "ul", $target ).length ?
 			$( "ul", $target ) :
 			$( "<ul class='ui-helper-reset'/>" ).appendTo( $target );
 		$list.append($$.attr('data-gid',$target.data('gid')).show());
+		__setSortableOnGroupUnit();
 	});
 }
 /**
@@ -127,9 +224,13 @@ function _registRelation($$,$target)
 		}
 	});
 }
+
 $(function(){
+	__consoleFix();
+	_setEventResetButton();
 	_setEventToGuestUnit();
 	_setEventToGroupUnit();
+	_flashMsgOperation();
 });
 
 //]]></script>

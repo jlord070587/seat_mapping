@@ -18,6 +18,7 @@
 	<div id="wrapper">
 		<div id="head">
 			<h1>ブライダル管理システム</h1>
+<?php echo $this->element('parts_gnavi');?> 
 		</div>
 		<div id="contents">
 		<div id="main">

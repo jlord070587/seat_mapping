@@ -50,37 +50,49 @@ body.forThickBox #wrapper {border:none;}
  *--------------------------------------------*/
 #head {
 	position:relative;
-	padding:5px;
 	border-bottom:1px solid gray;
 }
 
 #head h1 {
 	font-size:100%;
+	padding:5px;
 }
 
 #head h1 a {outline:none;}
 
-/*--------------------------------------------
- *コンテンツエリア（メニュー表示切り替え）
- *--------------------------------------------*/
-
-#contents ul#menuDispSwitch {
-	width:300px;
-	float:left;
-	margin:0;
-	padding:3px;
-	border-bottom:0px solid gray;
-	background:white;
+#globalNavi {
+	background-repeat: repeat-x;
+	background-image: -moz-linear-gradient(top, #f69, #D2598C);
+	background-image: -ms-linear-gradient(top, #f69, #D2598C);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#f69), to(#D2598C));
+	background-image: -webkit-linear-gradient(top, #f69, #D2598C);
+	background-image: -o-linear-gradient(top, #f69, #D2598C);
+	background-image: linear-gradient(center, #f69, #D2598C);
 }
-#contents ul#menuDispSwitch li {display:inline;}
-
-#contents #nowLoginUser {
-	text-align:right;
-	font-size:10px;
-	margin:0;
-	margin-left:300px;
-	padding:3px;
-	border-bottom:0px solid gray;
+#globalNavi li {
+	width:15%;
+	float:left;
+	list-style:none;
+	
+}
+#globalNavi li a {
+	display:block;
+	color:white;
+	text-align:center;
+	text-decoration:none;
+	text-shadow:1px 1px 3px black;
+	padding:5px 0;
+	border-right:1px solid white;
+}
+#globalNavi li a:hover {
+	text-shadow:1px 1px 3px white;
+	background-repeat: repeat-x;
+	background-image: -moz-linear-gradient(top, #f69, #936);
+	background-image: -ms-linear-gradient(top, #f69, #936);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#f69), to(#936));
+	background-image: -webkit-linear-gradient(top, #f69, #936);
+	background-image: -o-linear-gradient(top, #f69, #936);
+	background-image: linear-gradient(center, #f69, #936);
 }
 /*--------------------------------------------
  *コンテンツエリア（サブメニュー）
@@ -148,8 +160,7 @@ body.forThickBox #contents {background:none;}
 
 #foot {
 	clear:both;
-	height:40px;
-	background:#6D84B4;
+	background:#D2598C;
 }
 
 #foot ul {
@@ -165,10 +176,10 @@ body.forThickBox #contents {background:none;}
 #foot ul li a {text-decoration:none;}
 
 #foot p {
+	color:white;
 	font-size:90%;
 	text-align:center;
-	padding:0 0 5px;
-	border-top:1px solid gray;
+	padding:10px 0;
 }
 
 /* ------------------------------ */
@@ -220,8 +231,9 @@ body.general #contents #main {border:1px solid orange;}
 }
 
 #flashMessage {
-	clear: both;
+	width:200px;
 	color: #fff;
+	text-align:center;
 	margin-bottom:10px;
 	padding:5px;
 	background: #c43c35;
@@ -233,5 +245,16 @@ body.general #contents #main {border:1px solid orange;}
 	background-image: -webkit-linear-gradient(top, #ee5f5b, #c43c35);
 	background-image: -o-linear-gradient(top, #ee5f5b, #c43c35);
 	background-image: linear-gradient(top, #ee5f5b, #c43c35);
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+	position:fixed;
+	left:50%;top:40%;
+	margin-left:-100px;
+}
+
+.clearfix:after {
+	content: ".";
+	display:block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
 }

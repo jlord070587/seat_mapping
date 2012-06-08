@@ -133,6 +133,26 @@ class AppModel extends LazyModel
 		);
 	}
 	/**
+	 * ソート順を更新
+	 * @param array $sort_ids IDの配列
+	 * @return boolean
+	 */
+	public function updateSort($sort_ids)
+	{
+		try{
+			$this->begin();
+			foreach($sort_ids as $num => $g_id){
+				$this->set('id',$g_id);
+				$this->saveField('sort',$num);
+			}
+			$this->commit();
+			return true;
+		}catch(Exception $e){
+			$this->rollback();
+			return false;
+		}
+	}
+	/**
 	 * テンポラリ
 	 */
 	public function moveFile($path_set)
