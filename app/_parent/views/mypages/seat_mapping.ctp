@@ -1,11 +1,19 @@
 <h2><?php echo $this->Session->read('UserInfo.User.user_name');?>さんのマイページ</h2>
-<?php echo $this->Html->css('seat_mapping')."\n";?> 
+<?php
+	echo $this->Html->css('seat_mapping')."\n";
+	echo $this->element('css_group')."\n";
+?> 
 <h3>披露宴席次表編成</h3>
 
 <div id="console">
-<p><?php
-	echo $this->Form->button('リセット',array('type'=>'button','id'=>'resetRelation'))."\n";
-	echo $this->Form->select('template',Configure::read('template_map'),null,array('empty'=>false))."\n";
+<p>テンプレート:<?php
+	echo $this->Form->select('template',
+		Configure::read('template_map'),
+		$template_type = $this->Session->read('UserInfo.User.template_type'),
+		array('empty'=>'--選択してください--')
+	)."\n";
+?>　<?php
+	echo $this->Form->button('紐付リセット',array('type'=>'button','id'=>'resetRelation'))."\n";
 ?></p>
 </div>
 
@@ -30,6 +38,8 @@
 
 </div>
 
+<div id="floorAreaWrap">
+<?php if($template_type):?> 
 <div id="floorArea" class="clearfix">
 <?php if($group_list):foreach($group_list as $num => $item):?> 
 <div data-gid="<?php echo $item['Group']['id'];?>" class="groupUnit">
@@ -38,14 +48,16 @@
 <?php if($item['Guest']):?> 
 
 <?php foreach($item['Guest'] as $g_info){
-	printf("\t".'<li data-id="%s" data-uid="%s" data-gid="%s" data-whose="%s">%s %s%s<br />%s　%s　様</li>'."\n",
+	printf("\t".'<li data-id="%s" data-uid="%s" data-gid="%s" data-whose="%s"><span>%s</span><br />%s　%s　様</li>'."\n",
 		$g_info['id'],
 		$g_info['user_id'],
 		$g_info['group_id'],
 		$g_info['whose_guest'],
-		$whose_map[$g_info['whose_guest']],
-		$g_info['affiliation1'],
-		$g_info['affiliation2'],
+		$this->Text->truncate(
+			$whose_map[$g_info['whose_guest']].' '.$g_info['affiliation1'].' '.$g_info['affiliation2'],
+			7,
+			array('ending' => '...')
+		),
 		$g_info['name_sei'],
 		$g_info['name_mei']
 	);
@@ -55,6 +67,10 @@
 </ul>
 </div>
 <?php endforeach;endif;?> 
+</div>
+<?php else:?> 
+<em style="color:white;">使用するテンプレートを選択してください。</em>
+<?php endif;?> 
 </div>
 
 <?php echo $this->element('js_seat_mapping');?> 

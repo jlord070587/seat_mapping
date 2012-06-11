@@ -6,13 +6,13 @@
 	
 }
 
-#floorArea {
+#floorAreaWrap {
 	margin-left:220px;
 	background:gray;
+	overflow:auto;
 }
-
 div.groupUnit {
-	width:240px;
+	width:200px;
 	height:16em;
 	float:left;
 	border:1px solid gray;
@@ -74,5 +74,5 @@ div.groupSortHandle {
 
 #floorArea div.groupUnit ul li {
 	float:left;
-	width:112px;
+	width:92px;
 }

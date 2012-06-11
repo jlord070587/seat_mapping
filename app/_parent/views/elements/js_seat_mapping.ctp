@@ -26,8 +26,20 @@ function _consoleFix()
 function _setEventResetButton()
 {
 	$('#resetRelation').click(function(){
-		if(!confirm('各テーブルへの紐付けを全てリセットします。\n本当によろしいですか？')) return false;
+		if(!confirm('現在のテンプレート各テーブルへの紐付けを全てリセットします。\n本当によろしいですか？')) return false;
 		location.href = ROOT_URL + "/mypages/reset_relation";
+	});
+}
+/**
+ * テンプレ選択イベントセット
+ */
+function _setEventTemplateSelect()
+{
+	$('#template').change(function(){
+		//if(!$(this).val()) return false;
+		location.href = ROOT_URL
+		 + '/mypages/switch_template/template_type:'
+		 + $(this).val();
 	});
 }
 /**
@@ -220,6 +232,7 @@ function _registRelation($$,$target)
 $(function(){
 	_consoleFix();
 	_setEventResetButton();
+	_setEventTemplateSelect();
 	_setEventToGuestUnit();
 	_setEventToGroupUnit();
 });

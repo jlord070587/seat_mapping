@@ -3,8 +3,9 @@ App::import('Controller','AppSub');
 class ParentMypagesController extends AppSubController
 {
 	public $name = 'ParentMypages';
-	public $uses = array('Guest','Group');
-	public $component = array();
+	public $uses = array('Guest','Group','User');
+	public $components = array();
+	public $helpers = array('Text');
 	
 	public function dev()
 	{
@@ -24,8 +25,9 @@ class ParentMypagesController extends AppSubController
 	public function beforeFilter()
 	{
 		parent::beforeFilter();
-		$this->Guest->setUserId($this->Session->read('UserInfo.User.id'));
-		$this->Group->setUserId($this->Session->read('UserInfo.User.id'));
+		foreach($this->uses as $model){
+			$this->$model->setUserId($this->Session->read('UserInfo.User.id'));
+		}
 	}
 	
 	public function index()
@@ -46,7 +48,9 @@ class ParentMypagesController extends AppSubController
 	public function seat_mapping()
 	{
 		$this->set('guest_list',$this->Guest->getGuestList($cond['group_id'] = null));
-		$this->set('group_list',$this->Group->getGroupList());
+		$this->set('group_list',$this->Group->getGroupList(
+			$cond['template_type'] = $this->Session->read('UserInfo.User.template_type')
+		));
 	}
 	
 	public function sort_member()
@@ -84,6 +88,15 @@ class ParentMypagesController extends AppSubController
 		$this->Guest->resetRelation();
 		$this->Session->setFlash('紐付けをリセットしました。');
 		$this->redirect(array('action'=>'seat_mapping'));
+	}
+	
+	public function switch_template()
+	{
+		$t_code = $this->passedArgs['template_type'];
+		$this->User->setDefaultTemplate($t_code);
+		$this->Session->write('UserInfo.User.template_type',$t_code);
+		if($t_code) $this->Group->setEmptyGroupByTemplateOf($t_code);
+		$this->redirect('seat_mapping');
 	}
 }
 ?>

@@ -31,6 +31,19 @@
 		<p>&copy;office-ymd</p>
 		</div>
 	</div>
-	<?php echo $this->element('sql_dump'); ?>
+<?php if (Configure::read() > 0):?>
+<div id="myDebug">
+<fieldset>
+<legend>Post</legend>
+<?php pr($this->data);?>
+</fieldset>
+
+<fieldset>
+<legend>Session</legend>
+<?php pr($_SESSION);?>
+</fieldset>
+<?php echo $this->element('sql_dump');?>
+</div>
+<?php endif;?>
 </body>
 </html>
