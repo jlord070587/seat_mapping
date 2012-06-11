@@ -4,15 +4,17 @@ class ParentGroup extends AppSub
 {
 	public $name = 'ParentGroup';
 	public $useTable = 'groups';
-	public $hasMany = array('Guest' => array('order' => array('Guest.sort','Guest.id')));
 	
-	public function getGroupList($cond = array())
+	public function getGroupList()
 	{
-		$conditions = array();
-		$conditions[] = array('Group.user_id =' => $this->_user_id);
-		if($cond['template_type']) $conditions[] = array('Group.template_type =' => $cond['template_type']);
+		$this->bindModel(array('hasAndBelongsToMany'=>array('Guest')));
+		$conditions = array(
+			'Group.user_id =' => $this->_user_id,
+			'Group.template_type =' => $this->_u_info['template_type'],
+		);
 		$order = array('Group.sort','Group.id');
-		return $this->find('all',compact('conditions','order'));
+		$list = $this->find('all',compact('conditions','order'));
+		return $list;
 	}
 	
 	public function setEmptyGroupByTemplateOf($t_code)

@@ -5,8 +5,9 @@ var TOKEN = '<?php echo $token;?>';
 function _consoleFix()
 {
 	var offset1 = $("#guestListArea").offset();
+	var fix_limit = $('#foot').offset().top - $("#guestListArea").height();
 	$(window).scroll(function(e) {
-		if (offset1.top < $(this).scrollTop()) {
+		if (offset1.top < $(this).scrollTop() && $(this).scrollTop() < fix_limit) {
 			$("#guestListArea").css({
 				'position':'fixed',
 				'top':0,
@@ -145,8 +146,9 @@ function _sortOnGroupUnit(group)
 		url:ROOT_URL + '/mypages/ajax_regist_sort',
 		type:'post',
 		data:{
-			model:'Guest',
+			model:'GroupGuest',
 			sort_str:sort_arr.join('#'),
+			gid:group.parent().data('gid'),
 			token:TOKEN
 		},
 		success:function(response){

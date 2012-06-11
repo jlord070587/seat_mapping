@@ -41,12 +41,16 @@ App::import('Lib', 'LazyModel');
 class AppModel extends LazyModel
 {
 	protected $_user_id = null;
+	protected $_u_info = null;
 	
 	public function setUserId($id)
 	{
 		$this->_user_id = $id;
 	}
-	
+	public function setUserInfo($u_info)
+	{
+		$this->_u_info = $u_info;
+	}
 	protected $_progressBar;
 	protected $_loop_total_count = 0;
 	protected $_status_name = null;
@@ -137,13 +141,33 @@ class AppModel extends LazyModel
 	 * @param array $sort_ids IDの配列
 	 * @return boolean
 	 */
-	public function updateSort($sort_ids)
+	public function updateSort($post)
 	{
+		$sort_ids = explode('#',$post['sort_str']);
 		try{
 			$this->begin();
-			foreach($sort_ids as $num => $g_id){
-				$this->set('id',$g_id);
-				$this->saveField('sort',$num+1);
+			if($this->name=='Group'){
+				foreach($sort_ids as $num => $g_id){
+					$this->set('id',$g_id);
+					$this->saveField('sort',$num+1);
+				}
+			}
+			if($this->name=='GroupGuest'){
+				$conditions = array(
+					'GroupGuest.guest_id' => $sort_ids,
+					'GroupGuest.user_id =' => $this->_user_id,
+					'GroupGuest.template_type =' => $this->_u_info['template_type'],
+				);
+				$this->deleteAll($conditions,$cascade = false);
+				foreach($sort_ids as $guest_id){
+					$this->create($regist['GroupGuest'] = array(
+						'user_id' => $this->_user_id,
+						'guest_id' => $guest_id,
+						'group_id' => $post['gid'],
+						'template_type' => $this->_u_info['template_type'],
+					));
+					$this->save();
+				}
 			}
 			$this->commit();
 			return true;

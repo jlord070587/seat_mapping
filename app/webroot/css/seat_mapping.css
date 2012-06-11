@@ -1,5 +1,8 @@
 ﻿@charset "UTF-8";
 
+#layoutThumbWrap {text-align:center;}
+#layoutThumbWrap img {border:1px solid black;}
+
 #guestListArea {
 	width:200px;
 	float:left;

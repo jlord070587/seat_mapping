@@ -18,13 +18,17 @@
 </div>
 
 <div id="guestListArea">
+<p id="layoutThumbWrap"><?php
+	if(!$template_type) $template_type = 'x';
+	echo $this->Html->image('layout_thumb-'.$template_type.'.png',array('id'=>'layoutThumb'));
+?></p>
 <div id="guestList">
 <ul>
 <?php foreach($guest_list as $g_info){
 	printf("\t".'<li data-id="%s" data-uid="%s" data-gid="%s" data-whose="%s">%s %s%s<br />%s　%s　様</li>'."\n",
 		$g_info['Guest']['id'],
 		$g_info['Guest']['user_id'],
-		$g_info['Guest']['group_id'],
+		'',
 		$g_info['Guest']['whose_guest'],
 		$whose_map[$g_info['Guest']['whose_guest']],
 		$g_info['Guest']['affiliation1'],
@@ -35,7 +39,6 @@
 }?> 
 </ul>
 </div>
-
 </div>
 
 <div id="floorAreaWrap">
@@ -48,14 +51,15 @@
 <?php if($item['Guest']):?> 
 
 <?php foreach($item['Guest'] as $g_info){
+	if($g_info['GroupsGuest']['template_type']!=$template_type) continue;
 	printf("\t".'<li data-id="%s" data-uid="%s" data-gid="%s" data-whose="%s"><span>%s</span><br />%s　%s　様</li>'."\n",
 		$g_info['id'],
 		$g_info['user_id'],
-		$g_info['group_id'],
+		$g_info['GroupsGuest']['group_id'],
 		$g_info['whose_guest'],
 		$this->Text->truncate(
 			$whose_map[$g_info['whose_guest']].' '.$g_info['affiliation1'].' '.$g_info['affiliation2'],
-			7,
+			8,
 			array('ending' => '...')
 		),
 		$g_info['name_sei'],

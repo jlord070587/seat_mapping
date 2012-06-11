@@ -3,6 +3,8 @@ App::import('Model','AppSub');
 class ParentGuest extends AppSub
 {
 	public $name = 'ParentGuest';
+	public $useTable = 'guests';
+	public $GroupGuest = null;
 	
 	public function getGuestList($cond = array())
 	{
@@ -11,32 +13,16 @@ class ParentGuest extends AppSub
 		$conditions[] = array('Guest.group_id' => $cond['group_id'] ? $cond['group_id'] : NULL);
 		return $this->find('all',compact('conditions'));
 	}
-	
-	public function registRelation($post)
+	public function getNoBelongedGuestList()
 	{
-		try{
-			$this->set('id',$post['id']);
-			$this->saveField('group_id',$post['gid']=='null' ? null : $post['gid']);
-			return true;
-		}catch(Exception $e){
-			return false;
-		}
-	}
-	
-	public function resetRelation()
-	{
-		try{
-			$this->begin();
-			$regist = array('Guest.group_id' => NULL,'Guest.sort' => 0);
-			$conditions = array('Guest.user_id =' => $this->_user_id);
-//			prx($this->find('list',compact('conditions')));
-			$this->updateAll($regist,$conditions);
-			$this->commit();
-			return true;
-		}catch(Exception $e){
-			$this->rollback();
-			return false;
-		}
+		$this->GroupGuest = ClassRegistry::init('GroupGuest');
+		$related_guest_ids = $this->GroupGuest->getRelatedUserIds();
+		$conditions = array(
+			'Guest.user_id =' => $this->_user_id,
+			'NOT' => array('Guest.id' => $related_guest_ids),
+		);
+		$order = array('Guest.id');
+		return $list = $this->find('all',compact('conditions','order'));
 	}
 }
 ?>

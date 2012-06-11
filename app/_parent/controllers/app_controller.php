@@ -100,6 +100,17 @@ class AppController extends Controller
 		}
 	}
 	
+	protected function _setUserInfo()
+	{
+		if(!in_array($this->params['controller'],array('mypages','batches'))) return;
+		$this->_u_info = $this->Session->read('UserInfo.User');
+		foreach($this->uses as $model){
+			$this->$model->setUserId($this->_u_info['id']);
+			$this->$model->setUserInfo($this->_u_info);
+		}
+		return;
+	}
+	
 	protected function _globalAssign()
 	{
 		$this->set('whose_map',Configure::read('whose_map'));
@@ -129,6 +140,8 @@ class AppController extends Controller
 		$this->_judgeAdminSpace();//管理者ログオンを要するページのチェック
 		$this->_judgeMypageSpace();//一般ユーザーのログオンを要するページ（マイページ）のチェック
 		$this->_validSession();//CSRF対策？
+		
+		$this->_setUserInfo();
 		
 		if(strpos($this->params['action'],'ajax')){
 			$this->laytout = 'ajax';
