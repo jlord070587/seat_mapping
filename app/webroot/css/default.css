@@ -23,7 +23,7 @@ ver.01	公開時バージョン（2008.01.10）
 
 #head,
 #contents,
-#foot {font-size:12px;}
+#foot {font-size:80%;}
 /*
 #head *,
 #contents *,
@@ -121,7 +121,7 @@ input.small{width:30%;}
 input.x-small{width:15%;}
 input.xx-small{width:5%;}
 
-textarea {width:90%;}
+textarea {width:99%;}
 
 input[type=text],
 input[type=password],

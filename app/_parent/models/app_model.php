@@ -143,7 +143,7 @@ class AppModel extends LazyModel
 			$this->begin();
 			foreach($sort_ids as $num => $g_id){
 				$this->set('id',$g_id);
-				$this->saveField('sort',$num);
+				$this->saveField('sort',$num+1);
 			}
 			$this->commit();
 			return true;

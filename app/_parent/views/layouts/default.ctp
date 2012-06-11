@@ -10,6 +10,7 @@
 	<?php echo $scripts_for_layout;?>
 	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 	<?php echo $this->Html->script('jquery-ui-1.8.20.custom.min.js');?> 
+	<?php echo $this->Html->script('common.js');?> 
 	<script type="text/javascript">//<![CDATA[
 	var ROOT_URL = '<?php echo ROOT_URL;?>';
 	//]]></script>

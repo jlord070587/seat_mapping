@@ -9,7 +9,7 @@
 	padding:0;
 }
 
-/*html,body {height:100%;}*/
+html,body {height:100%;}
 
 body {
 	color:#333;
@@ -32,6 +32,7 @@ body {
 
 #wrapper {
 	width:90%;
+	min-height:90%;
 	/*min-width:950px;*/
 	margin-left:auto;margin-right:auto;
 	border-left:1px solid gray;
@@ -137,6 +138,7 @@ body.forThickBox #wrapper {border:none;}
 
 #contents {
 	clear:both;
+	min-height:400px;
 	padding-bottom:50px;
 	background:url(./cssimg/contents_bg.gif) repeat-y 210px top;
 }
@@ -154,6 +156,26 @@ body.forThickBox #contents {background:none;}
 	text-align:right;
 }
 
+#contents #authBox {
+	width:450px;
+	margin-left:auto;
+	margin-right:auto;
+	padding:10px;
+	box-shadow:3px 3px 3px #ccc;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	-o-border-radius:5px;
+	border-radius:5px;
+	border:1px solid #ccc;
+}
+#contents #authBox ul {
+	text-align:center;
+	padding:0;
+}
+#contents #authBox ul li {
+	display:inline;
+	list-style:none;
+}
 /*--------------------------------------------
  *フットエリア
  *--------------------------------------------*/
@@ -231,7 +253,7 @@ body.general #contents #main {border:1px solid orange;}
 }
 
 #flashMessage {
-	width:200px;
+	width:250px;
 	color: #fff;
 	text-align:center;
 	margin-bottom:10px;
@@ -247,7 +269,7 @@ body.general #contents #main {border:1px solid orange;}
 	background-image: linear-gradient(top, #ee5f5b, #c43c35);
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
 	position:fixed;
-	left:50%;top:40%;
+	left:50%;top:0;
 	margin-left:-100px;
 }
 

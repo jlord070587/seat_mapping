@@ -2,19 +2,7 @@
 var GROUP_CAPACITY = 10;
 var TOKEN = '<?php echo $token;?>';
 
-function _flashMsgOperation()
-{
-	if($('#flashMessage').length==0) return;
-	setInterval(function(){
-		if($('#flashMessage').hasClass('afterHide')){
-			$('#flashMessage').addClass('afterHide');
-		}else{
-			$('#flashMessage').remove();
-			clearInterval();
-		}
-	},5000);
-}
-function __consoleFix()
+function _consoleFix()
 {
 	var offset1 = $("#guestListArea").offset();
 	$(window).scroll(function(e) {
@@ -94,8 +82,12 @@ function __setDroppableOnGroupUnit()
 function _registGroupSort()
 {
 	var sort_arr = [];
+	var i = 1;
 	$('div.groupUnit').each(function(){
-		sort_arr.push($(this).data('gid'));
+		var $$ = $(this);
+		$$.find('span.num').text(i);
+		sort_arr.push($$.data('gid'));
+		i++;
 	});
 	$.ajax({
 		url:ROOT_URL + '/mypages/ajax_regist_sort',
@@ -226,11 +218,10 @@ function _registRelation($$,$target)
 }
 
 $(function(){
-	__consoleFix();
+	_consoleFix();
 	_setEventResetButton();
 	_setEventToGuestUnit();
 	_setEventToGroupUnit();
-	_flashMsgOperation();
 });
 
 //]]></script>

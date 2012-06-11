@@ -1,11 +1,15 @@
 <h2><?php echo $this->Session->read('UserInfo.User.user_name');?>さんのマイページ</h2>
-
+<?php echo $this->Html->css('seat_mapping')."\n";?> 
 <h3>披露宴席次表編成</h3>
 
-<div id="guestListArea">
+<div id="console">
 <p><?php
 	echo $this->Form->button('リセット',array('type'=>'button','id'=>'resetRelation'))."\n";
+	echo $this->Form->select('template',Configure::read('template_map'),null,array('empty'=>false))."\n";
 ?></p>
+</div>
+
+<div id="guestListArea">
 <div id="guestList">
 <ul>
 <?php foreach($guest_list as $g_info){
@@ -26,10 +30,10 @@
 
 </div>
 
-<div id="floorArea">
-<?php if($group_list):foreach($group_list as $item):?> 
+<div id="floorArea" class="clearfix">
+<?php if($group_list):foreach($group_list as $num => $item):?> 
 <div data-gid="<?php echo $item['Group']['id'];?>" class="groupUnit">
-<div class="groupSortHandle">テーブルソート</div>
+<div class="groupSortHandle">[<span class="num"><?php echo $num + 1;?></span>]テーブルソート</div>
 <ul>
 <?php if($item['Guest']):?> 
 

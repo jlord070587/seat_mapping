@@ -1,4 +1,4 @@
-<?php if($is_logon):?> 
+<?php if($this->Session->check('LogonFlg')):?> 
 <ul id="globalNavi" class="clearfix">
 	<li><?php echo $this->Html->link('アンケート',
 		array('controller'=>'mypages','action'=>'enquete'));?></li>

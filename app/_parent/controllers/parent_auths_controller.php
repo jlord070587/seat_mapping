@@ -35,14 +35,13 @@ class ParentAuthsController extends AppSubController
 	
 	public function logout()
 	{
-		if(isset($_POST['logout'])){
-			$this->Session->delete('LogonFlg');
-			$this->Session->delete('UserInfo');
-			foreach($_SESSION as $k=>$v){
-				if($k != 'Config')unset($_SESSION[$k]);
-			}
-			$this->redirect('/');	
+		$this->Session->delete('LogonFlg');
+		$this->Session->delete('UserInfo');
+		foreach($_SESSION as $k=>$v){
+			if($k != 'Config')unset($_SESSION[$k]);
 		}
+		$this->Session->setFlash('ログアウトしました。');
+		$this->redirect(array('action'=>'index'));	
 	}
 	
 	public function timeout(){}

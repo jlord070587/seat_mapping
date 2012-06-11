@@ -8,14 +8,12 @@
 
 #floorArea {
 	margin-left:220px;
-	height:600px;
-	/*border:1px solid gray;
-	background:gray;*/
+	background:gray;
 }
 
 div.groupUnit {
-	width:300px;
-	height:18em;
+	width:240px;
+	height:16em;
 	float:left;
 	border:1px solid gray;
 	background:white;
@@ -49,6 +47,7 @@ div.groupSortHandle {
 #guestList ul li,
 #floorArea div.groupUnit ul li {
 	cursor:move;
+	font-size:11px;
 	height:3em;
 	margin:0 1px;
 	padding:1px 3px;
@@ -75,5 +74,5 @@ div.groupSortHandle {
 
 #floorArea div.groupUnit ul li {
 	float:left;
-	width:142px;
+	width:112px;
 }
