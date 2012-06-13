@@ -1,6 +1,7 @@
 <?php
 $css_map = array(
 	'1' => array('floor_area_width' => 810),
+	'2' => array('floor_area_width' => 610),
 );
 $template_type = $this->Session->read('UserInfo.User.template_type');
 ?>

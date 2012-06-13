@@ -79,3 +79,22 @@ div.groupSortHandle {
 	float:left;
 	width:92px;
 }
+#guestList ul li p,
+#floorArea div.groupUnit ul li p {
+	margin:0;
+}
+#guestList ul li p.belongTo1 span.whose,
+#floorArea div.groupUnit ul li p.belongTo1 span.whose {
+	padding-left:10px;
+	background:url(./cssimg/bullet_blue.png) no-repeat left center;
+}
+#guestList ul li p.belongTo2 span.whose,
+#floorArea div.groupUnit ul li p.belongTo2 span.whose {
+	padding-left:10px;
+	background:url(./cssimg/bullet_pink.png) no-repeat left center;
+}
+
+#floorArea div.groupUnit ul li span.whose {
+	/*display:block;*/
+}
+#floorArea div.groupUnit ul li span.affiliation {display:none;}

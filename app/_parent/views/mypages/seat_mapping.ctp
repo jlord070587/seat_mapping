@@ -2,6 +2,7 @@
 <?php
 	echo $this->Html->css('seat_mapping')."\n";
 	echo $this->element('css_group')."\n";
+	echo $this->element('batch_consoles')."\n";
 ?> 
 <h3>披露宴席次表編成</h3>
 
@@ -25,10 +26,23 @@
 <div id="guestList">
 <ul>
 <?php foreach($guest_list as $g_info){
-	printf("\t".'<li data-id="%s" data-uid="%s" data-gid="%s" data-whose="%s">%s %s%s<br />%s　%s　様</li>'."\n",
+	$attr_title = sprintf('%s %s %s %s　%s %s',
+		$whose_map[$g_info['Guest']['whose_guest']],
+		$g_info['Guest']['affiliation1'],
+		$g_info['Guest']['affiliation2'],
+		$g_info['Guest']['name_sei'],
+		$g_info['Guest']['name_mei'],
+		$g_info['Guest']['proper_title']
+	);
+	printf("\t".'<li data-id="%s" data-uid="%s" data-gid="%s" data-whose="%s" title="%s">' .
+			'<p class="belongTo%s"><span class="whose">%s</span> ' .
+			'<span class="affiliation">%s%s</span></p>' .
+			'%s　%s　様</li>'."\n",
 		$g_info['Guest']['id'],
 		$g_info['Guest']['user_id'],
 		'',
+		$g_info['Guest']['whose_guest'],
+		$attr_title,
 		$g_info['Guest']['whose_guest'],
 		$whose_map[$g_info['Guest']['whose_guest']],
 		$g_info['Guest']['affiliation1'],
@@ -52,16 +66,26 @@
 
 <?php foreach($item['Guest'] as $g_info){
 	if($g_info['GroupsGuest']['template_type']!=$template_type) continue;
-	printf("\t".'<li data-id="%s" data-uid="%s" data-gid="%s" data-whose="%s"><span>%s</span><br />%s　%s　様</li>'."\n",
+	$attr_title = sprintf('%s %s %s %s　%s %s',
+		$whose_map[$g_info['whose_guest']],
+		$g_info['affiliation1'],
+		$g_info['affiliation2'],
+		$g_info['name_sei'],
+		$g_info['name_mei'],
+		$g_info['proper_title']
+	);
+	printf("\t".'<li data-id="%s" data-uid="%s" data-gid="%s" data-whose="%s" title="%s">' .
+			'<p class="belongTo%s"><span class="whose">%s</span> ' .
+			'<span class="affiliation">%s%s</span></p>' .
+			'%s　%s　様</li>'."\n",
 		$g_info['id'],
 		$g_info['user_id'],
 		$g_info['GroupsGuest']['group_id'],
 		$g_info['whose_guest'],
-		$this->Text->truncate(
-			$whose_map[$g_info['whose_guest']].' '.$g_info['affiliation1'].' '.$g_info['affiliation2'],
-			8,
-			array('ending' => '...')
-		),
+		$attr_title,
+		$g_info['whose_guest'],
+		$whose_map[$g_info['whose_guest']],
+		$g_info['affiliation1'],$g_info['affiliation2'],
 		$g_info['name_sei'],
 		$g_info['name_mei']
 	);
