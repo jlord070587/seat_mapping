@@ -1,0 +1,42 @@
+@charset "UTF-8";
+
+table.general {
+	margin:10px 0;
+	border:1px solid gray;
+}
+table.general th {
+	color:white;
+	background:#FF6699;
+}
+table.general th,
+table.general td {
+	padding:2px 5px;
+	border-right:1px solid gray;
+	border-bottom:1px solid gray;
+}
+
+form.inline {display:inline;}
+
+#entryFormArea {
+	width:40%;
+	float:left;
+	border:1px solid gray;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	-ms-border-radius:5px;
+	-o-border-radius:5px;
+	border-radius:5px;
+}
+
+#guestListWrap {
+	width:50%;
+	float:right;
+}
+
+#entryFormArea table,
+#guestListWrap table {
+	width:95%;
+	margin-left:auto;
+	margin-right:auto;
+}
+.handle {cursor:move;}

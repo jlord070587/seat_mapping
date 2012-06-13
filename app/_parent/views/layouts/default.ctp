@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Script-Type" content="text/javascript" />
 	<title><?php echo $title_for_layout; ?>|ブライダル管理システム</title>
 	<?php echo $this->Html->meta('icon');?> 
-	<?php echo $this->Html->css(array('common','default'));?> 
+	<?php echo $this->Html->css(array('common','default','contents'));?> 
 	<?php echo $scripts_for_layout;?>
 	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 	<?php echo $this->Html->script('jquery-ui-1.8.20.custom.min.js');?> 
