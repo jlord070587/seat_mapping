@@ -73,7 +73,7 @@ class AppController extends Controller
 			
 		))) return;
 		
-		if(in_array($this->params['controller'],array('mypages'))
+		if(in_array($this->params['controller'],array('mypages','guests'))
 			&& !$this->Session->check('AdminLogonFlg')
 		){//ユーザーマイページ領域
 			$sess = $this->Session->read('LogonFlg');
@@ -102,7 +102,7 @@ class AppController extends Controller
 	
 	protected function _setUserInfo()
 	{
-		if(!in_array($this->params['controller'],array('mypages','batches'))) return;
+		if(!in_array($this->params['controller'],array('mypages','guests','batches'))) return;
 		$this->_u_info = $this->Session->read('UserInfo.User');
 		foreach($this->uses as $model){
 			$this->$model->setUserId($this->_u_info['id']);
@@ -114,6 +114,7 @@ class AppController extends Controller
 	protected function _globalAssign()
 	{
 		$this->set('whose_map',Configure::read('whose_map'));
+		$this->set('proper_map',Configure::read('proper_map'));
 	}
 	
 	public function beforeFilter()

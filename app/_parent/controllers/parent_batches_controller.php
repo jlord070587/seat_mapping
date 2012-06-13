@@ -58,7 +58,7 @@ class ParentBatchesController extends AppSubController
 		
 		$this->set('list',$this->Tex->__filteringTex($list));
 		
-		$source = $this->render('floor_layout');
+		$source = $this->render('floor_layout-'.$this->_u_info['template_type']);
 		//prx($source);
 		$source = $this->__requestActionAfterOperation($source);
 		$this->progress->_progressBar->update($this->progress->_get_percentage($i++), 'ファイル出力中');
@@ -75,35 +75,13 @@ class ParentBatchesController extends AppSubController
 	
 	public function batch()
 	{
+		$this->layout = false;
 		$token = h($this->passedArgs['token']);
-		$pdf_type = h($this->passedArgs['pdf_type']);
-		$with_idx = (isset($this->passedArgs['with_idx']) && h($this->passedArgs['with_idx'])=='true');
 		//トークン照合
 		if(!isset($token)){die('token_error:不正なアクセスです。');}
 		//prx($this->passedArgs);
-		if($pdf_type=='integ'){
-			$integ_files = array('integ.tex','part_simple_list.tex','part_prog_list.tex');
-			foreach($integ_files as $integ_file){
-				copy(TEX_SOURCE_DIR.'/parts/'.$integ_file,TEX_SOURCE_DIR.'/'.$integ_file);
-			}
-			$integ_tpl = file_get_contents(TEX_SOURCE_DIR.'/parts/integ.tex');
-			$replace_map = array(
-				'%%%%__TEX_SOURCE_DIR__%%%%' => TEX_SOURCE_DIR,
-				'%%%%__ORG_NAME__%%%%' => ORG_NAME,
-				'%%%%__CONFERENCE_NAME__%%%%' => CONFERENCE_NAME,
-				'%%%%__TERM__%%%%' => TERM,
-			);
-			file_put_contents(
-				TEX_SOURCE_DIR.'/integ.tex',
-				strtr($integ_tpl,$replace_map)
-			);
-		}
 		
-		$this->Batch->setPdfType($pdf_type);
-		$unit_id = isset($this->passedArgs['unit_id']) && $this->passedArgs['unit_id']
-			 ? h($this->passedArgs['unit_id']) : null;
-		$this->Batch->setUserId($unit_id);
-		$this->Batch->setWithIdx($with_idx);
+		$this->Batch->setUserId(sprintf('%03d',$this->_u_info['id']));
 		$this->Batch->mainRoutin();
 		
 		exit;

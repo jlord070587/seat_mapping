@@ -4,40 +4,40 @@ class ParentBatchComponent extends Object
 	/**
 	 * ユーザーID
 	 */
-	var $_user_id = null;
+	protected $_user_id = null;
 	/**
 	 * 生成PDFの種類（スケジュール：schedule／抄録：program）
 	 */
-	var $_pdf_type = null;
-	var $_comp_array = array();
-	var $_with_idx = false;
+	protected $_pdf_type = null;
+	protected $_comp_array = array();
+	protected $_with_idx = false;
 	
 	/**
 	 * 処理ソースファイル名配列
 	 */
-	var $_files = array();
+	protected $_files = array();
 	/**
 	 * 処理ソースファイル数
 	 */
-	var $_num = 0;
+	protected $_num = 0;
 	/**
 	 * エラーの有無
 	 */
-	var $_error_flag = false;
+	protected $_error_flag = false;
 	/**
 	 * エラー内容格納配列
 	 */
-	var $_error_array = array();
+	protected $_error_array = array();
 	/**
 	 * コマンドの実行回数
 	 */
-	var $_cmd_cnt = 0;
+	protected $_cmd_cnt = 0;
 	/**
 	 * Texコマンドの返り値
 	 */
-	var $_cmd_result = '';
+	protected $_cmd_result = '';
 	
-	function startup()
+	public function startup()
 	{
 	}
 	/**
@@ -46,21 +46,21 @@ class ParentBatchComponent extends Object
 	 * @param integer $uid ユーザーID
 	 * @return void
 	 */
-	function setUserId($uid)
+	public function setUserId($uid)
 	{
 		$this->_user_id = $uid;
 	}
 	/**
 	 * 生成PDFの種類をセット（スケジュール／抄録）
 	 */
-	function setPdfType($type)
+	public function setPdfType($type)
 	{
 		$this->_pdf_type = $type;
 	}
 	/**
 	 * 演者索引出力フラグをセット
 	 */
-	function setWithIdx($with_idx)
+	public function setWithIdx($with_idx)
 	{
 		$this->_with_idx = $with_idx;
 	}
@@ -69,7 +69,7 @@ class ParentBatchComponent extends Object
 	 * @access public
 	 * @return void
 	 */
-	function mainRoutin()
+	public function mainRoutin()
 	{
 		$this->__setProgressHTML();
 		ob_start();
@@ -84,12 +84,12 @@ class ParentBatchComponent extends Object
 	 * @access private
 	 * @return void
 	 */
-	function __getSourceFile()
+	protected function __getSourceFile()
 	{
 		//ユーザーに関係なくまとめて処理したい場合に使用（この場合、拡張子「tex」のファイルをすべて処理する）
 		//$this->_files = glob (TEX_SOURCE_DIR."/{*.tex}",  GLOB_BRACE);
-		$name_part = (in_array($this->_pdf_type,array('sess_set','prog_set'))) ? session_id() : $this->_user_id;
-		$source_path = sprintf('%s/%s_%s.tex',TEX_SOURCE_DIR,$this->_pdf_type,$name_part);
+		$name_part = $this->_user_id;
+		$source_path = sprintf('%s/%s.tex',TEX_SOURCE_DIR,$name_part);
 		if(file_exists($source_path)) $this->_files[] = $source_path;
 		$this->_num = count($this->_files);
 		if($this->_num == 0) die('<p>処理するTexソースがありません。TeXソース生成に失敗しているかもしれません。</p>'."\n");
@@ -100,7 +100,7 @@ class ParentBatchComponent extends Object
 	 * @access private
 	 * @return void
 	 */
-	function __assemblePDF()
+	protected function __assemblePDF()
 	{
 		//$this->__dispMessage("<p>".$this->_num."件の組版処理を開始します</p>\n");
 		
@@ -117,8 +117,8 @@ class ParentBatchComponent extends Object
 			//事前ごみ処理
 			$this->__eraseDustFiles($file_name,'before');
 			
-			// platexコマンド（2回実施）
-			$this->__texCmdExec($file_name,'platex');
+			// platexコマンド
+			//$this->__texCmdExec($file_name,'platex');
 			$this->_cmd_result = $this->__texCmdExec($file_name,'platex');
 			
 			//演者索引作成
@@ -148,7 +148,7 @@ class ParentBatchComponent extends Object
 	 * @param string $cmd_type コマンド名
 	 * @return string コマンド実行結果
 	 */
-	function __texCmdExec($file_name,$cmd_type)
+	protected function __texCmdExec($file_name,$cmd_type)
 	{
 		switch($cmd_type){
 			case 'platex':// Texコンパイル
@@ -167,11 +167,7 @@ class ParentBatchComponent extends Object
 				$opt = array('width'=>array(140,160),'stat'=>'索引抽出');
 				break;
 			case 'dvipdfmx':// PDF生成
-				if($this->_pdf_type=='schedule'){
-					$cmd= sprintf("dvipdfmx -l %s ", TEX_SOURCE_DIR.'/'.$file_name);
-				}else{
-					$cmd= sprintf("dvipdfmx -V 5 %s ", TEX_SOURCE_DIR.'/'.$file_name);
-				}
+				$cmd= sprintf("dvipdfmx -l -V 5 %s ", TEX_SOURCE_DIR.'/'.$file_name);
 				$opt = array('width'=>array(180,190),'stat'=>'ファイル書出');
 				break;
 		}
@@ -179,13 +175,16 @@ class ParentBatchComponent extends Object
 		
 		// 作業ディレクトリへ移動（chdirとexec両方必要）
 		chdir(TEX_SOURCE_DIR);
-		
 		if(!IS_WINDOWS){
 			$cd_cmd = 'cd '.TEX_SOURCE_DIR;
 			exec($cd_cmd);
 			// コマンドのパスの通し方がわからないため、愚直にフルパスで指定している...orz
-			exec('export CMAPFONTS=/usr/share/ghostscript/8.15/Resource/CMap/');
-			$cmd = '/usr/local/texlive/p2009/bin/i686-pc-linux-gnu/'.$cmd;
+			if(preg_match('/myschedule\.jp/',getenv('HTTP_HOST'))){
+				$cmd = '/usr/local/teTeX/bin/'.$cmd;
+			}else{
+				exec('export CMAPFONTS=/usr/share/ghostscript/8.15/Resource/CMap/');
+				$cmd = '/usr/local/texlive/p2009/bin/i686-pc-linux-gnu/'.$cmd;
+			}
 		}
 		
 		$cmd_result = exec($cmd);
@@ -197,7 +196,7 @@ class ParentBatchComponent extends Object
 	 * @param string $file_name ソースファイル名（拡張子なし）
 	 * @return void;
 	 */
-	function __errorLogCheck($file_name)
+	protected function __errorLogCheck($file_name)
 	{
 		if(!file_exists(TEX_SOURCE_DIR.'/'.$file_name.".log")) return;
 		
@@ -224,31 +223,24 @@ class ParentBatchComponent extends Object
 	 * @param string $file_name ソースファイル名（拡張子なし）
 	 * @return void
 	 */
-	function __moveFiles($file_name)
+	protected function __moveFiles($file_name)
 	{
 		//PDFディレクトリへファイルコピー
 		if(file_exists(TEX_SOURCE_DIR.'/'.$file_name.".pdf") && $this->_error_flag === false){
 			
 			$this->__dispStatusMessage('ファイル移動中..',100);
-			$is_unit_pdf = in_array($this->_pdf_type,array('sess_unit','prog_unit'));
 			//PDFをコピー
-			if($is_unit_pdf){
-				$dest_pdf_path = sprintf('%s/%s/%s.pdf',PDF_OUTPUT_DIR,$this->_pdf_type,$file_name);
-			}else{
-				$dest_pdf_path = sprintf('%s/%s.pdf',PDF_OUTPUT_DIR,$file_name);
-			}
+			$dest_pdf_path = sprintf('%s/%s.pdf',PDF_OUTPUT_DIR,$file_name);
+			
 			copy(TEX_SOURCE_DIR.'/'.$file_name.".pdf", $dest_pdf_path);
 			//ログファイルをコピー
 			copy(TEX_SOURCE_DIR.'/'.$file_name.".log", TEX_LOG_DIR.'/'.$file_name.".log");
 			//TeXソースをバックアップ
 			copy(TEX_SOURCE_DIR.'/'.$file_name.".tex", FINISHED_TEX_SOURCE_DIR.'/'.$file_name.".tex");
 			
-			if($is_unit_pdf){
-				$pdf_link = sprintf('%s%s/%s.pdf',PDF_OUT_URL,$this->_pdf_type,$file_name);
-			}else{
-				$pdf_link = sprintf('%s%s.pdf',PDF_OUT_URL,$file_name);
-			}
-			$pdf_dl_link = sprintf('%s/batches/download/pdf_type:%s/file:%s',ROOT_URL,$this->_pdf_type,$file_name);
+			$pdf_link = sprintf('%s%s.pdf',PDF_OUT_URL,$file_name);
+			
+			$pdf_dl_link = sprintf('%s/batches/download/file:%s',ROOT_URL,$file_name);
 			
 			$closer = '<p style="text-align:center;margin-bottom:0;">' .
 					'<a href="'.$pdf_link.'" target="_blank">' .
@@ -260,10 +252,7 @@ class ParentBatchComponent extends Object
 					'</p>' .
 					'</body>' .
 					'</html>';
-			//$closer .= '　<a href="'.TICKET_PRINT_URL.$this->_user_id.'">半券発行</a><br>';
 			$this->__dispMessage(/*$js.*/$closer);
-			
-			
 		}else{
 			if(file_exists(TEX_SOURCE_DIR.'/'.$file_name.".log")){
 				copy(TEX_SOURCE_DIR.'/'.$file_name.".log", TEX_LOG_DIR.'/'.$file_name.".log");
@@ -286,13 +275,9 @@ class ParentBatchComponent extends Object
 	 * エラー発生時は、ソース・ログなどをエラー専用ディレクトリにアーカイブする
 	 * @return void
 	 */
-	function _makeErrorArchive()
+	public function _makeErrorArchive()
 	{
-		if(in_array($this->_pdf_type,array('sess_unit','prog_unit'))){
-			$filename_part = sprintf('%s/%s_%s',$this->_pdf_type,$this->_pdf_type,$this->_user_id);
-		}else{
-			$filename_part = sprintf('%s_%s',$this->_pdf_type,session_id());
-		}
+		$filename_part = $this->_user_id;
 		$list = glob(TEX_SOURCE_DIR.'/'.$filename_part.'.{tex,log,ids}',GLOB_BRACE);
 		$to_dir = sprintf('%s/error/%s',TEX_ROOT_DIR,date('YmdHis'));
 		mkdir($to_dir,0777);
@@ -310,13 +295,12 @@ class ParentBatchComponent extends Object
 	 * @param string $phase 処理前or処理後
 	 * @return void
 	 */
-	function __eraseDustFiles($file_name,$phase)
+	protected function __eraseDustFiles($file_name,$phase)
 	{
 		// 当該Texソースファイルの始末
 		if($phase == 'after'){
 			if($this->_error_flag) $this->_makeErrorArchive();
 			@unlink(TEX_SOURCE_DIR.'/'.$file_name.".tex");
-			@unlink(TEX_SOURCE_DIR.'/'.$file_name.".ids");
 		}
 		
 		$dust_files = glob (
@@ -327,11 +311,6 @@ class ParentBatchComponent extends Object
 		if(!$dust_files) return;
 		
 		foreach($dust_files as $dustfile) {
-//			if(preg_match('/\.(aind|[bc]idx)$/',basename($dustfile))){
-//				$filename = basename($dustfile);
-//				list($name_body,$ext) = explode('.',$filename);
-//				copy($dustfile,TEX_SOURCE_DIR.'/parts/integ.'.$ext);
-//			}
 			@unlink($dustfile);
 		}
 		
@@ -342,7 +321,7 @@ class ParentBatchComponent extends Object
 	 * @access private
 	 * @return void
 	 */
-	function __closeMessage()
+	protected function __closeMessage()
 	{
 		if($this->_error_flag === false) {
 			//$end_msg = '<p style="clear:both;">全'.$this->_num .'件の処理が正常に終了しました</p>';
@@ -367,7 +346,7 @@ class ParentBatchComponent extends Object
 	 * @access private
 	 * @param string $msg メッセージ
 	 */
-	function __dispMessage($msg)
+	protected function __dispMessage($msg)
 	{
 		echo $msg;
 		ob_flush();flush();
@@ -376,7 +355,7 @@ class ParentBatchComponent extends Object
 	 * バッファにメッセージ出力＋プレグレスバー幅変更
 	 * @return void
 	 */
-	function __dispStatusMessage($msg,$width)
+	protected function __dispStatusMessage($msg,$width)
 	{
 		$js = '';
 		if(is_array($width)){
@@ -390,7 +369,7 @@ class ParentBatchComponent extends Object
 					'</script>'."\n";
 		}
 		echo $js;
-		usleep(500);
+		usleep(1000);
 		ob_flush();flush();
 	}
 	/**
@@ -413,7 +392,7 @@ class ParentBatchComponent extends Object
 	 * バッチ処理開始前処理
 	 * @return void
 	 */
-	function __setProgressHTML()
+	protected function __setProgressHTML()
 	{
 		header("Content-Type:text/html; charset=UTF-8");
 		$head = '<html><head>' .

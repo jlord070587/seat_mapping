@@ -1,0 +1,217 @@
+%\def\pdfliteral#1{\special{pdf:content #1}}%pict2e用？
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[usenames]{color}
+\usepackage[deluxe]{otf}
+\setlength{\unitlength}{1mm}
+%\setlength{\voffset}{0mm}
+%\setlength{\hoffset}{0mm}
+\setlength{\topmargin}{-1in}
+\addtolength{\topmargin}{19mm}
+\setlength{\oddsidemargin}{-1in}
+\addtolength{\oddsidemargin}{10.5mm}
+\setlength{\evensidemargin}{-1in}
+\addtolength{\evensidemargin}{10.5mm}
+\setlength{\textwidth}{276mm}
+\setlength{\textheight}{171mm}
+\setlength{\headsep}{0mm}
+\setlength{\headheight}{0mm}
+\setlength{\footskip}{19mm}
+\setlength{\fboxsep}{0mm}
+\setlength{\parindent}{0pt}
+\setlength{\baselineskip}{0pt}
+\linethickness{1pt}
+%
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%均等割
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\kintou}[2]{%
+	\leavevmode
+	\hbox to #1{%
+		\kanjiskip=0pt plus 1fill minus 1fill
+		\xkanjiskip=\kanjiskip
+		#2}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%文字数カウント
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\wordCount}[1]{%
+  \@tempcnta\z@
+  \@tfor \@tempa:=#1\do{\advance\@tempcnta\@ne}%
+  \the\@tempcnta
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%個人枠
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\person}[3]{%
+	%敬称の基準長さ
+	\setbox4=\hbox{{\fontsize{\parsonKeisyouFSize}{\parsonKeisyouFSize}\selectfont 様}}
+	\setbox5=\hbox{{\fontsize{\parsonKeisyouFSize}{\parsonKeisyouFSize}\selectfont #3}}
+	\parsonKeisyouFSize=\parsonKeisyouResetFSize
+	\parsonWidth=\parsonResetWidth
+	\ifdim\wd5>\wd4%「くん」や「ちゃん」の処理
+	\advance\parsonKeisyouFSize-2pt%文字サイズを小さく
+	\setbox6=\hbox{{\fontsize{\parsonKeisyouFSize}{\parsonKeisyouFSize}\selectfont #3}}
+	\toks4{\resizebox{5.5mm}{\ht6}{#3}}%様の幅に合わせる
+	\advance\parsonWidth by 2mm
+	\else
+	\toks4{#3}
+	\fi
+	
+	%名前の基準長さ
+	\setbox0=\hbox{{\fontsize{\parsonNameFSize}{\parsonNameFSize}\selectfont ○○○○○○ \the\toks4}}
+	%実際の名前の長さ
+	\setbox1=\hbox{{\fontsize{\parsonNameFSize}{\parsonNameFSize}\selectfont #2 \the\toks4}}
+	\dimen0=1pt
+	\ifdim\wd1>\wd0%
+		\toks0{\resizebox{\wd0}{\ht0}{#2{\thinspace}\the\toks4}}
+	\else
+		\ifdim\wd1<\wd0%
+			\toks0{\kintou{6zw}{#2} \the\toks4}
+		\else
+			\toks0{#2 \the\toks4}
+		\fi
+	\fi
+	%肩書きの基準高さ
+	\parsonKatagakiFSize=\parsonKatagakiResetFSize%初期化
+	\setbox2=\hbox{\parbox[c]{\parsonWidth}{\fontsize{\parsonKatagakiFSize}{\parsonKatagakiFSize}\selectfont #1}}
+	
+	
+	\@whiledim\ht2>\katagakiHeight\do{%肩書きが２行を越える場合、文字サイズを小さくして２行に収める
+	\advance\parsonKatagakiFSize-0.05pt
+	\setbox2=\hbox{\parbox[c]{\parsonWidth}{\fontsize{\parsonKatagakiFSize}{\parsonKatagakiFSize}\selectfont #1}}
+	%%\@tfor\setbox3:=#1\do{\scalebox{.5}[1]{}}
+	}
+	
+	\toks1{\fontsize{\parsonKatagakiFSize}{\parsonKatagakiFSize}\selectfont #1}
+	
+	%\fbox{%
+	\begin{minipage}[c][\parsonHeight][c]{\parsonWidth}%
+	\setlength{\baselineskip}{0pt}
+	\the\toks1\\[\nameKatagakiVspace]
+	{\fontsize{\parsonNameFSize}{\parsonNameFSize}\selectfont \the\toks0}\\[0mm]
+	\end{minipage}%}%
+	\vspace\personVspace}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%個人枠１列分の集合
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\personsUnit}[1]{%
+	%\fbox{%
+	\begin{minipage}[c][\personsUnitHeight][c]{\personsUnitWidth}%
+	#1%
+	\end{minipage}}%}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%座席内側のグルーピング枠
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\seat}[1]{%
+	\begin{minipage}[b][\seatHeight][t]{\seatWidth}%
+	#1%
+	\end{minipage}}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%座席ユニット
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\seatUnit}[3]{%
+	\put(#1){%
+	%\hskip-1.2mm%
+	\tableUnit{39}{22}{#2}{0}%
+	\fbox{%
+	\begin{minipage}[b][\seatUnitHeight][c]{\seatUnitWidth}%
+	%%%%%%%%%%%%%%%%%%%%%%%%
+	%\hskip7.5mm%
+	%%%%%%%%%%%%%%%%%%%%%%%%
+	\centering{#3}%
+	\end{minipage}}%
+	}}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%テーブルの描画ルーチン
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\tableUnit}[4]{%
+	\newdimen\xLength
+	\newdimen\yLength
+	\newdimen\tableX
+	\newdimen\tableY
+	\xLength=#1 pt
+	\yLength=#2 pt
+	\newdimen\tableY
+	\tableX=#1 pt
+	\tableY=#2 pt
+	\ifnum#4=1
+		%%長机
+		\advance\xLength by -6.4pt
+		\advance\yLength by -20pt%テーブルの長さの半分を引く
+		\put(\strip@pt\xLength,\strip@pt\yLength){\framebox(11,40){%frameboxの第2引数がテーブルの長さ
+		\fontsize{18pt}{18pt}\selectfont {\textsf{\textgt #3}}}}
+	\else
+		%%円卓
+		\linethickness{0.3pt}%
+		%
+		%円卓中央に文字が来るよう微調整
+		\advance\xLength by -2.7pt%
+		\advance\yLength by -1.95pt%
+		
+		%実線の円卓（文字黒）
+		%\put(#1,#2){\circle{9}}
+		%\put(\strip@pt\xLength,\strip@pt\yLength){\fontsize{16pt}{16pt}\selectfont {\textsf{\textgt #3}}}
+		
+		%グラフィックの円卓（文字白）
+		\advance\tableX by -2.3mm%
+		\advance\tableY by -2.3mm%
+		\put(\strip@pt\tableX,\strip@pt\tableY){\includegraphics{\imagePath/table/\tableColor.pdf}}
+		\put(\strip@pt\xLength,\strip@pt\yLength){\fontsize{16pt}{16pt}\selectfont {\textsf{\textgt{\textcolor{white}{#3}}}}}
+	\fi
+	%%%\put(45.5,27){\fontsize{22pt}{22pt}\selectfont {\textsf{\textgt #3}}}
+	}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%高砂を含むヘッダブロック
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\headUnit}[6]{%
+	\put(#1){%
+	%ヘッダレイアウト枠
+	%\fbox{%
+	\begin{minipage}[b][30mm][c]{276mm}%
+		\vskip-8mm%ヘッダ枠内の上アキの調整
+		%席次表タイトルユニット
+		\hskip25mm%
+		\begin{minipage}[c][10mm][c]{60mm}%
+		{\fontsize{11pt}{16pt}\selectfont %
+		\parbox[c][10mm][c]{4.5zw}{%
+		\kintou{4zw}{#2家}\\%
+		\kintou{4zw}{#3家}%
+		}結婚披露宴御席表}%
+		\end{minipage}%
+		%高砂ユニット
+		\hskip25.5mm%
+		%\fbox{%
+		\begin{minipage}[c]{55mm}%
+		\vskip1mm%
+		\centering{%
+		\parbox[c][11mm][c]{3zw}{\centering{%
+		{\fontsize{9pt}{9pt}\selectfont 新郎}\\[1mm]%
+		{\fontsize{11pt}{11pt}\selectfont \kintou{2.5zw}{#4}}%
+		}}\hskip15mm%
+		\parbox[c][11mm][c]{3zw}{\centering{%
+		{\fontsize{9pt}{9pt}\selectfont 新婦}\\[1mm]
+		{\fontsize{11pt}{11pt}\selectfont \kintou{2.5zw}{#5}}%
+		}}}\leavevmode\\[2mm]%
+		\linethickness{0.3pt}
+		\framebox(55,5){\fontsize{10pt}{10pt}\selectfont 高　砂}%この席名は不要？
+		\end{minipage}%}%
+		\hskip10.5mm%
+		\begin{minipage}[c]{100mm}%
+		\centering{%
+		\fontsize{10pt}{10pt}\selectfont #6}%
+		\end{minipage}%
+	\end{minipage}}%}%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%欄外備考
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\warning}[1]{%
+%\put(146,0){%
+\put(190,0){%
+\begin{minipage}[t][8mm][c]{99mm}%
+{\fontsize{7pt}{7pt}\selectfont #1}%
+\end{minipage}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatother
