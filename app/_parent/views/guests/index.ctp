@@ -65,12 +65,14 @@ var TOKEN = '<?php echo $token;?>';
 function _consoleFix()
 {
 	var offset1 = $("#entryFormArea").offset();
-	var fix_limit = $('#foot').offset().top - $("#entryFormArea").height();
+	var fix_limit = $('#foot').offset().top - $("#entryFormArea").height() -20;
 	$(window).scroll(function(e) {
-		if (offset1.top < $(this).scrollTop() && $(this).scrollTop() < fix_limit) {
+		if (offset1.top < $(this).scrollTop()) {
+			var limit_offset = fix_limit - $(this).scrollTop();
+			if(limit_offset) var top_pos = limit_offset > 0 ? 0 : limit_offset;
 			$("#entryFormArea").css({
 				'position':'fixed',
-				'top':0,
+				'top':top_pos,
 				'z-index':100000
 			});
 		} else {

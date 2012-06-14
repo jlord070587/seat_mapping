@@ -18,7 +18,7 @@ table.general td {
 form.inline {display:inline;}
 
 #entryFormArea {
-	width:40%;
+	width:400px;
 	float:left;
 	border:1px solid gray;
 	-moz-border-radius:5px;
@@ -29,8 +29,7 @@ form.inline {display:inline;}
 }
 
 #guestListWrap {
-	width:50%;
-	float:right;
+	margin-left:420px;
 }
 
 #entryFormArea table,
