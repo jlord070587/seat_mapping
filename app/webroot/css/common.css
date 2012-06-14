@@ -146,7 +146,7 @@ body.forThickBox #wrapper {border:none;}
 
 #contents {
 	clear:both;
-	min-height:400px;
+	min-height:620px;
 	padding-bottom:50px;
 	background:url(./cssimg/contents_bg.gif) repeat-y 210px top;
 }

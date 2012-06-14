@@ -60,6 +60,9 @@
 				break;
 			case 'off':
 				__setLimit();
+				$("#guestListArea").css({
+					'position':'static'
+				});
 				$('#pg-percent').removeAttr('style');
 				$('#pg-text-1').html('');
 				$('#pg-text-2').html('<?php echo $this->Html->image('standby.gif',array('alt'=>'待機中'));?>');
@@ -110,7 +113,9 @@ echo $form->create('Batch',$option);?>
 
 <?php echo $form->hidden('token',array('name'=>'token','value'=>$token));?> 
 <?php echo $form->hidden('limit',array('id'=>'limit1','name'=>'limit','value'=>''));?> 
-<?php echo $form->submit('生成開始',array('div'=>false));?> 
+<?php echo $form->button(
+	$this->Html->image('ico_make_pdf.png').' 生成開始',
+	array('id'=>'makePdfBtn'));?> 
 <?php echo $form->end();?> 
 
 </td>

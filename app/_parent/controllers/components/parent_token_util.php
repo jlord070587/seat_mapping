@@ -35,6 +35,7 @@ class ParentTokenUtilComponent extends Object
 	{
 		if($token == null){
 			if(isset($controller->params['form']['token'])) $token = $controller->params['form']['token'];
+			if(isset($controller->params['url']['token'])) $token = $controller->params['url']['token'];
 		}
 		if($controller->Session->check('token')) {
 			if(!isset($token) || $controller->Session->read('token') !== $token) {

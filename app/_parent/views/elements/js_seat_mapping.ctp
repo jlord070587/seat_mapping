@@ -1,16 +1,18 @@
 <script type="text/javascript">//<![CDATA[
 var GROUP_CAPACITY = 10;
 var TOKEN = '<?php echo $token;?>';
-
+var MAX_G_UNIT_Z_INDEX = 50;
 function _consoleFix()
 {
 	var offset1 = $("#guestListArea").offset();
-	var fix_limit = $('#foot').offset().top - $("#guestListArea").height();
+	var fix_limit = $('#foot').offset().top - $("#guestListArea").height() -20;
 	$(window).scroll(function(e) {
-		if (offset1.top < $(this).scrollTop() && $(this).scrollTop() < fix_limit) {
+		if (offset1.top < $(this).scrollTop()) {
+			var limit_offset = fix_limit - $(this).scrollTop();
+			if(limit_offset) var top_pos = limit_offset > 0 ? 0 : limit_offset;
 			$("#guestListArea").css({
 				'position':'fixed',
-				'top':0,
+				'top':top_pos,
 				'width':'200px',
 				'z-index':100000
 			});
@@ -29,6 +31,35 @@ function _setEventResetButton()
 	$('#resetRelation').click(function(){
 		if(!confirm('現在のテンプレート各テーブルへの紐付けを全てリセットします。\n本当によろしいですか？')) return false;
 		location.href = ROOT_URL + "/mypages/reset_relation";
+	});
+}
+/**
+ * テーブルユニット追加イベントセット
+ */
+function _setEventAddGroupButton()
+{
+	$('#addGroup').click(function(){
+		if(!confirm('テーブルを追加してよろしいですか？')) return false;
+		$.getJSON(
+			ROOT_URL + '/mypages/ajax_add_group',
+			{
+				token:TOKEN
+			},
+			function(json){
+				if(json == 'failure'){
+					alert(response);
+					return false;
+				}
+				var add_unit = $('div.groupUnit:last').clone()
+					.addClass('lastAdd')
+					.css({'left':10,'top':10}).attr('data-gid',json.id);
+				var num_span = add_unit.find('span.num');
+				num_span.text(num_span.text() - 0 + 1);
+				add_unit.find('li').remove();
+				add_unit.appendTo('#floorArea');
+				_setEventToGroupUnit();
+			}
+		);
 	});
 }
 /**
@@ -67,7 +98,11 @@ function __setSortableOnGroupUnit()
 	$('div.groupUnit').find('ul').sortable({
 		placeholder:'placeholder',
 		update:function(event,ui){
-			_sortOnGroupUnit(ui.item.parent());
+			if(ui.item.hasClass('ngSort')){
+				ui.item.removeClass('ngSort');
+			}else{
+				_sortOnGroupUnit(ui.item.parent());
+			}
 		}
 	}).find('li').draggable({
 		disabled:true,//sortableと共存するために必要
@@ -78,10 +113,15 @@ function __setDroppableOnGroupUnit()
 {
 	$('div.groupUnit').droppable({
 		accept:function(draggable){
+			if(draggable.hasClass('groupUnit')) return false;
 			return ($(this).find('li').length < GROUP_CAPACITY);
 		},
-		over:function(){
+		over:function(event,ui){
 			$(this).addClass('dropOver');
+			if(ui.draggable.data('gid') != $(this).data('gid')){
+				ui.draggable.draggable('enable');
+				ui.draggable.addClass('ngSort');
+			}
 		},
 		out:function(){
 			$(this).removeClass('dropOver');
@@ -92,26 +132,69 @@ function __setDroppableOnGroupUnit()
 		}
 	});
 }
-function _registGroupSort()
+//function _registGroupSort()
+//{
+//	var sort_arr = [];
+//	var i = 1;
+//	$('div.groupUnit').each(function(){
+//		var $$ = $(this);
+//		$$.find('span.num').text(i);
+//		sort_arr.push($$.data('gid'));
+//		i++;
+//	});
+//	$.ajax({
+//		url:ROOT_URL + '/mypages/ajax_regist_sort',
+//		type:'post',
+//		data:{
+//			model:'Group',
+//			sort_str:sort_arr.join('#'),
+//			token:TOKEN
+//		},
+//		success:function(response){
+//			if(response != 'success') alert(response);
+//		}
+//	});
+//}
+
+function _registGroupPos(ui,active_elem)
 {
-	var sort_arr = [];
-	var i = 1;
-	$('div.groupUnit').each(function(){
-		var $$ = $(this);
-		$$.find('span.num').text(i);
-		sort_arr.push($$.data('gid'));
-		i++;
-	});
 	$.ajax({
-		url:ROOT_URL + '/mypages/ajax_regist_sort',
+		url:ROOT_URL + '/mypages/ajax_update_group_pos',
 		type:'post',
 		data:{
-			model:'Group',
-			sort_str:sort_arr.join('#'),
+			gid:active_elem.data('gid'),
+			custom_point:ui.position.left + ',' + ui.position.top,
 			token:TOKEN
 		},
 		success:function(response){
-			if(response != 'success') alert(response);
+			if(response != 'success'){
+				alert(response);
+				active_elem.css({
+					'top':ui.originalPosition.top,
+					'left':ui.originalPosition.left
+				})
+			}
+		}
+	});
+}
+
+function _deleteGroupUnit(g_unit)
+{
+	$.ajax({
+		url:ROOT_URL + '/mypages/ajax_delete_group_unit',
+		type:'post',
+		data:{
+			gid:g_unit.data('gid'),
+			token:TOKEN
+		},
+		success:function(response){
+			if(response == 'failure'){
+				alert(response);
+				return false;
+			}
+			g_unit.fadeOut('slow',function(){
+				$(this).remove();
+			});
 		}
 	});
 }
@@ -120,18 +203,55 @@ function _registGroupSort()
  */
 function _setEventToGroupUnit()
 {
-	$('#floorArea').sortable({
-		handle:'.groupSortHandle',
-		activate:function(){
-			$('div.groupUnit').droppable('disable');
+//	$('#floorArea').sortable({
+//		handle:'.groupSortHandle',
+//		activate:function(){
+//			$('div.groupUnit').droppable('disable');
+//		},
+//		deactivate:function(){
+//			$('div.groupUnit').droppable('enable');
+//		},
+//		update:function(event,ui){
+//			_registGroupSort();
+//		}
+//	});
+<?php if($template_type=='x'):?> 
+	$('div.groupUnit').draggable({
+		grid:[10,10],
+		containment:'parent',
+		handle:'.groupHandle',
+		opacity:0.5,
+		start:function(e,ui){
+			var z_index = $(this).css('z-index');
+			if(z_index == 'auto'){
+				z_index = MAX_G_UNIT_Z_INDEX;
+			}else{
+				if(z_index < MAX_G_UNIT_Z_INDEX) z_index = MAX_G_UNIT_Z_INDEX;
+				else z_index = MAX_G_UNIT_Z_INDEX++;
+			}
+			$(this).css('z-index',z_index);
 		},
-		deactivate:function(){
-			$('div.groupUnit').droppable('enable');
-		},
-		update:function(event,ui){
-			_registGroupSort();
+		stop:function(e,ui){
+			_registGroupPos(ui,$(this));
+			$(this).removeClass('lastAdd');
 		}
 	});
+	$('span.delGroupBtn').click(function(){
+		var $$ = $(this);
+		var g_unit = $$.parents('div.groupUnit');
+		if(g_unit.find('li').length > 0){
+			alert('招待客が紐付いたテーブルは削除できません。');
+			return false;
+		}
+		if($('div.groupUnit').length == 1){
+			alert('テーブルは少なくとも1つは必要です。');
+			return false;
+		}
+		if(!confirm($$.siblings('span.num').text()
+			 + '番テーブルを削除しようとしています。\n本当によろしいですか？')) return false;
+		_deleteGroupUnit(g_unit);
+	});
+<?php endif;?> 
 	__setDroppableOnGroupUnit();
 	__setSortableOnGroupUnit();
 }
@@ -234,6 +354,7 @@ function _registRelation($$,$target)
 $(function(){
 	_consoleFix();
 	_setEventResetButton();
+	_setEventAddGroupButton();
 	_setEventTemplateSelect();
 	_setEventToGuestUnit();
 	_setEventToGroupUnit();

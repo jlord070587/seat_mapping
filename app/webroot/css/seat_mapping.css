@@ -6,33 +6,54 @@
 #guestListArea {
 	width:200px;
 	float:left;
-	
 }
 
 #floorAreaWrap {
 	margin-left:220px;
+	border:solid gray;
+	border-width:0 0 1px 0;
 	background:gray;
 	overflow:auto;
 }
+#floorArea {
+	position:relative;
+	margin:10px;
+	margin-left:auto;margin-right:auto;
+	background:url(./cssimg/floor_area_bg.png);
+}
 div.groupUnit {
-	width:200px;
-	height:16em;
-	float:left;
+	position:absolute;
+	/*float:left;*/
 	border:1px solid gray;
+	border-width:0 1px 1px;
 	background:white;
 }
-div.groupSortHandle {
+div.groupHandle {
+	position:relative;
 	color:white;
 	background:black;
 	cursor:move;
 }
+div.lastAdd div.groupHandle {
+	background:red;
+}
+span.delGroupBtn {
+	position:absolute;
+	right:0;
+	background:#a00;
+	cursor:pointer;
+}
+span.delGroupBtn:hover {
+	background:red;
+}
 .ui-draggable-dragging {
 	display:block !important;
 	width:200px !important;
+	z-index:1000;
 }
 .dropOver {background:#ffc !important;}
 #floorArea div.groupUnit ul li.placeholder {
-	height:3em;
+	height:1.5em;
 	background-repeat: repeat-x;
 	background-image: -moz-linear-gradient(top, #fff, #faa);
 	background-image: -ms-linear-gradient(top, #fff, #faa);
@@ -78,23 +99,23 @@ div.groupSortHandle {
 #floorArea div.groupUnit ul li {
 	float:left;
 	width:92px;
+	height:1.5em;
 }
 #guestList ul li p,
 #floorArea div.groupUnit ul li p {
 	margin:0;
+	white-space:nowrap;
+	overflow:hidden;
 }
-#guestList ul li p.belongTo1 span.whose,
-#floorArea div.groupUnit ul li p.belongTo1 span.whose {
+#guestList ul li p.belongTo1,
+#floorArea div.groupUnit ul li p.belongTo1 {
 	padding-left:10px;
 	background:url(./cssimg/bullet_blue.png) no-repeat left center;
 }
-#guestList ul li p.belongTo2 span.whose,
-#floorArea div.groupUnit ul li p.belongTo2 span.whose {
+#guestList ul li p.belongTo2,
+#floorArea div.groupUnit ul li p.belongTo2 {
 	padding-left:10px;
 	background:url(./cssimg/bullet_pink.png) no-repeat left center;
 }
 
-#floorArea div.groupUnit ul li span.whose {
-	/*display:block;*/
-}
-#floorArea div.groupUnit ul li span.affiliation {display:none;}
+#floorArea div.groupUnit ul li p.withAttr {display:none;}

@@ -86,6 +86,29 @@ class ParentMypagesController extends AppSubController
 		exit;
 	}
 	
+	public function ajax_update_group_pos()
+	{
+		$this->TokenUtil->checkToken($this);
+		$bool = $this->Group->updatePos($this->params['form']);
+		echo $bool ? 'success' : 'failure';
+		exit;
+	}
+	
+	public function ajax_add_group()
+	{
+		$this->TokenUtil->checkToken($this);
+		$g_info = $this->Group->addCustomGroup();
+		echo $g_info ? json_encode($g_info['Group']) : 'failure';
+		exit;
+	}
+	
+	public function ajax_delete_group_unit()
+	{
+		$this->TokenUtil->checkToken($this);
+		$bool = $this->Group->delete($this->params['form']['gid'],$cascade = false);
+		echo $bool ? 'success' : 'failure';
+		exit;
+	}
 	public function reset_relation()
 	{
 		$this->GroupGuest->resetRelation();
