@@ -134,6 +134,7 @@ input[type=text] {
 
 button,
 input.btn {
+	padding:1px 2px;
 	cursor:pointer;
 }
 
@@ -147,6 +148,9 @@ button.active {background:navy;}
 button.ng {background:#900;}
 button.semiNg {background:#333;}
 
+button img {
+	vertical-align:bottom;
+}
 abbr,
 acronym {
 	cursor:help;
